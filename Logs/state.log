@@ -1,0 +1,22 @@
+2026-06-07 13:28:13,775 - Mock Version: 6.7
+2026-06-07 13:28:13,779 - Start(bootstrap): chroot init
+2026-06-07 13:28:13,821 - Start(bootstrap): cleaning package manager metadata
+2026-06-07 13:28:13,822 - Finish(bootstrap): cleaning package manager metadata
+2026-06-07 13:28:14,112 - Finish(bootstrap): chroot init
+2026-06-07 13:28:14,112 - Start: chroot init
+2026-06-07 13:28:14,117 - Start: unpacking root cache
+2026-06-07 13:28:17,171 - Finish: unpacking root cache
+2026-06-07 13:28:17,173 - Start: cleaning package manager metadata
+2026-06-07 13:28:17,177 - Finish: cleaning package manager metadata
+2026-06-07 13:28:18,468 - Start: dnf4 update
+2026-06-07 13:28:28,754 - Finish: dnf4 update
+2026-06-07 13:28:29,047 - Finish: chroot init
+2026-06-07 13:28:29,047 - Start: build phase for openssl35-3.5.6-1.el8.src.rpm
+2026-06-07 13:28:29,048 - Start: build setup for openssl35-3.5.6-1.el8.src.rpm
+2026-06-07 13:29:02,563 - Finish: build setup for openssl35-3.5.6-1.el8.src.rpm
+2026-06-07 13:29:02,563 - Start: rpmbuild openssl35-3.5.6-1.el8.src.rpm
+2026-06-07 13:29:02,564 - Start: Outputting list of installed packages
+2026-06-07 13:29:02,853 - Finish: Outputting list of installed packages
+2026-06-07 13:31:53,448 - Finish: rpmbuild openssl35-3.5.6-1.el8.src.rpm
+2026-06-07 13:31:53,569 - Finish: build phase for openssl35-3.5.6-1.el8.src.rpm
+2026-06-07 13:31:53,572 - Finish: run
