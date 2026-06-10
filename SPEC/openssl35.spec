@@ -5,9 +5,9 @@
 %global __requires_exclude ^lib(ssl|crypto)\\.so\\.3.*$
 
 Name: openssl35
-Version: 3.5.6
+Version: 3.5.7
 Release: 1%{?dist}
-Summary: Private OpenSSL 3.5.6 LTS build for applications
+Summary: Private OpenSSL 3.5.7 LTS build for applications
 
 License: Apache-2.0
 URL: https://www.openssl.org/
@@ -22,9 +22,9 @@ Provides: openssl35-libs = %{version}-%{release}
 Provides: openssl35-devel = %{version}-%{release}
 
 %description
-Private OpenSSL 3.5.6 LTS build for applications.
+Private OpenSSL 3.5.7 LTS build for applications.
 
-This package installs OpenSSL 3.5.6 under /opt/openssl35.
+This package installs OpenSSL 3.5.7 under /opt/openssl35.
 It does not replace the system OpenSSL libraries provided by AlmaLinux.
 
 %prep
@@ -48,5 +48,5 @@ make install_sw DESTDIR=%{buildroot}
 %{openssl35_prefix}
 
 %changelog
-* Sat Jun 06 2026 Akiyoshi Kurita <weibu@redadmin.org> - 3.5.6-1
-- Initial private OpenSSL 3.5.6 LTS build for EL8
+* Wed Jun 10 2026 Akiyoshi Kurita <weibu@redadmin.org> - 3.5.7-1
+- Initial private OpenSSL 3.5.7 LTS build for EL8
