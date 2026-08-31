@@ -1,13 +1,18 @@
 # openssl35-el8-rpm
 
-Unofficial private OpenSSL 3.5.x RPM package for AlmaLinux 8.
+Unofficial OpenSSL 3.5.x LTS RPM package for AlmaLinux 8.
 
-This package installs OpenSSL 3.5.x under `/opt/openssl35`.
-It does not replace the system OpenSSL libraries provided by AlmaLinux.
+This package installs OpenSSL 3.5.x under:
+
+```text
+/opt/openssl35
+```
+
+It is designed to coexist with the system OpenSSL provided by AlmaLinux 8 and does not replace or overwrite the system OpenSSL installation.
 
 ## Disclaimer
 
-This is an unofficial, personal RPM packaging project for AlmaLinux.
+This is an unofficial, personal RPM packaging project.
 
 This package is not provided, endorsed, reviewed, or supported by the AlmaLinux OS Foundation or the AlmaLinux project.
 
@@ -19,16 +24,77 @@ This package is intended for:
 
 * post-quantum cryptography testing
 * application-specific OpenSSL testing
-* compatibility testing
-* private OpenSSL evaluation
+* TLS compatibility testing
+* software development and evaluation
+* testing applications against OpenSSL 3.5.x on EL8
 
-## License
+It is not intended to replace the system OpenSSL packages.
 
-OpenSSL itself is licensed under the Apache License 2.0.
+## Installation layout
 
-This RPM packaging project follows the same license unless otherwise noted.
+OpenSSL 3.5.x is installed under:
 
-See the upstream OpenSSL license for details.
+```text
+/opt/openssl35
+```
+
+Important paths include:
+
+```text
+/opt/openssl35/bin/openssl
+/opt/openssl35/include
+/opt/openssl35/lib64/libssl.so.3
+/opt/openssl35/lib64/libcrypto.so.3
+/opt/openssl35/lib64/pkgconfig
+```
+
+The RPM also installs:
+
+```text
+/etc/ld.so.conf.d/openssl35.conf
+```
+
+containing:
+
+```text
+/opt/openssl35/lib64
+```
+
+The dynamic linker cache is updated automatically during RPM installation and removal.
+
+## Coexistence with AlmaLinux 8 OpenSSL
+
+AlmaLinux 8 normally provides OpenSSL 1.1.1 libraries such as:
+
+```text
+/lib64/libssl.so.1.1
+/lib64/libcrypto.so.1.1
+```
+
+This package provides OpenSSL 3.5 libraries under:
+
+```text
+/opt/openssl35/lib64/libssl.so.3
+/opt/openssl35/lib64/libcrypto.so.3
+```
+
+Because the libraries use different SONAMEs, OpenSSL 1.1.1 and OpenSSL 3.5 can coexist on the same system.
+
+Example:
+
+```bash
+ldconfig -p | grep -E 'libssl|libcrypto'
+```
+
+Expected entries include both:
+
+```text
+libssl.so.3 => /opt/openssl35/lib64/libssl.so.3
+libssl.so.1.1 => /lib64/libssl.so.1.1
+
+libcrypto.so.3 => /opt/openssl35/lib64/libcrypto.so.3
+libcrypto.so.1.1 => /lib64/libcrypto.so.1.1
+```
 
 ## Install
 
@@ -36,26 +102,38 @@ See the upstream OpenSSL license for details.
 sudo dnf install ./openssl35-3.5.*.el8.x86_64.rpm
 ```
 
-Verify:
+Verify the installation:
 
 ```bash
 /opt/openssl35/bin/openssl version -a
-ldd /opt/openssl35/bin/openssl | grep -E 'ssl|crypto'
-readelf -d /opt/openssl35/bin/openssl | grep -E 'RPATH|RUNPATH'
 ```
 
-Expected library path:
+Check runtime libraries:
+
+```bash
+ldd /opt/openssl35/bin/openssl
+```
+
+Expected OpenSSL libraries:
 
 ```text
-/opt/openssl35/lib64/libssl.so.3
-/opt/openssl35/lib64/libcrypto.so.3
+libssl.so.3 => /opt/openssl35/lib64/libssl.so.3
+libcrypto.so.3 => /opt/openssl35/lib64/libcrypto.so.3
+```
+
+The runtime search path can also be inspected with:
+
+```bash
+readelf -d /opt/openssl35/bin/openssl | grep -E 'RPATH|RUNPATH'
 ```
 
 ## Build integration
 
-Applications must be explicitly built or configured to use `/opt/openssl35`.
+Installing this RPM does not automatically make applications build against OpenSSL 3.5.
 
-Common build environment:
+Applications should explicitly use `/opt/openssl35` when they are compiled.
+
+A common build environment is:
 
 ```bash
 export CPPFLAGS="-I/opt/openssl35/include"
@@ -63,7 +141,11 @@ export LDFLAGS="-L/opt/openssl35/lib64 -Wl,-rpath,/opt/openssl35/lib64"
 export PKG_CONFIG_PATH="/opt/openssl35/lib64/pkgconfig"
 ```
 
+This is especially important because both the system OpenSSL development libraries and OpenSSL 3.5 may exist on the same machine.
+
 ## Nginx example
+
+Example configuration for dynamically linking Nginx against OpenSSL 3.5:
 
 ```bash
 ./configure \
@@ -81,6 +163,13 @@ Verify:
 ldd /path/to/nginx | grep -E 'ssl|crypto'
 ```
 
+Expected libraries:
+
+```text
+/opt/openssl35/lib64/libssl.so.3
+/opt/openssl35/lib64/libcrypto.so.3
+```
+
 ## Apache httpd / mod_ssl example
 
 ```bash
@@ -92,13 +181,15 @@ make
 make install
 ```
 
-Verify:
+Verify the resulting module:
 
 ```bash
 ldd /path/to/mod_ssl.so | grep -E 'ssl|crypto'
 ```
 
 ## Erlang/OTP / BEAM example
+
+Configure Erlang/OTP with:
 
 ```bash
 ./configure --with-ssl=/opt/openssl35
@@ -107,47 +198,107 @@ make
 make install
 ```
 
-Verify:
+Verify the crypto NIF:
 
 ```bash
 ldd /path/to/erlang/lib/crypto-*/priv/lib/crypto.so | grep -E 'ssl|crypto'
 ```
 
-You can also check from Erlang:
+OpenSSL information can also be checked from Erlang:
 
 ```bash
-erl -noshell -eval 'io:format("~p~n", [crypto:info_lib()]), halt().'
+erl -noshell \
+  -eval 'io:format("~p~n", [crypto:info_lib()]), halt().'
 ```
 
-## STARTTLS note
+## STARTTLS testing
 
-For STARTTLS testing, rebuild the component that actually terminates STARTTLS.
+For STARTTLS testing, rebuild or configure the component that actually terminates the TLS connection.
 
 Examples:
 
-* If Erlang/BEAM handles STARTTLS, rebuild Erlang/OTP with `/opt/openssl35`.
-* If Postfix handles STARTTLS, rebuild Postfix with `/opt/openssl35`.
-* If Dovecot handles STARTTLS, rebuild Dovecot with `/opt/openssl35`.
+* Erlang/BEAM application handles STARTTLS
+  → build Erlang/OTP against `/opt/openssl35`
 
-Nginx and Apache are only relevant when they terminate TLS/HTTPS.
+* Postfix handles SMTP STARTTLS
+  → build Postfix against `/opt/openssl35`
 
-## RPM dependency note
+* Dovecot handles IMAP/POP3 STARTTLS
+  → build Dovecot against `/opt/openssl35`
 
-This package is intended to be used explicitly as `openssl35`.
+* Nginx terminates HTTPS/TLS
+  → build Nginx against `/opt/openssl35`
 
-It should not provide generic system library capabilities such as:
+* Apache httpd/mod_ssl terminates HTTPS/TLS
+  → build Apache/mod_ssl against `/opt/openssl35`
+
+Rebuilding Nginx or Apache does not affect STARTTLS handled by a different application.
+
+## RPM dependency model
+
+This package is intentionally isolated from the system OpenSSL RPM dependency namespace.
+
+Libraries under `/opt/openssl35` are not exported as generic RPM Provides such as:
 
 ```text
-libssl.so.3
-libcrypto.so.3
+libssl.so.3()(64bit)
+libcrypto.so.3()(64bit)
 ```
 
-Applications that use this package should explicitly depend on:
+This prevents the private OpenSSL installation from accidentally satisfying dependencies intended for the operating system OpenSSL packages.
+
+The RPM instead provides private package capabilities:
+
+```text
+openssl35-libs
+openssl35-devel
+```
+
+Applications packaged specifically for this OpenSSL build may use:
 
 ```spec
 BuildRequires: openssl35-devel
 Requires: openssl35-libs
 ```
 
-and should be built with `/opt/openssl35` specified.
+and should explicitly build against:
+
+```text
+/opt/openssl35
+```
+
+## Verification
+
+To verify that both OpenSSL versions coexist:
+
+```bash
+ldconfig -p | grep -E 'libssl|libcrypto'
+```
+
+To verify the private OpenSSL executable:
+
+```bash
+ldd /opt/openssl35/bin/openssl
+```
+
+To verify an application built against OpenSSL 3.5:
+
+```bash
+ldd /path/to/application | grep -E 'ssl|crypto'
+```
+
+The expected OpenSSL 3.5 paths are:
+
+```text
+/opt/openssl35/lib64/libssl.so.3
+/opt/openssl35/lib64/libcrypto.so.3
+```
+
+## License
+
+OpenSSL is licensed under the Apache License 2.0.
+
+This RPM packaging project follows the same license unless otherwise noted.
+
+See the upstream OpenSSL project for the OpenSSL license and copyright information.
 

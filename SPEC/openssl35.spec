@@ -1,52 +1,77 @@
 %global debug_package %{nil}
 %global openssl35_prefix /opt/openssl35
 
+# Do not expose private OpenSSL libraries as system-wide RPM Provides.
 %global __provides_exclude_from ^%{openssl35_prefix}/.*\\.so.*$
+
+# Binaries under /opt/openssl35 resolve these libraries privately.
 %global __requires_exclude ^lib(ssl|crypto)\\.so\\.3.*$
 
-Name: openssl35
-Version: 3.5.7
-Release: 1%{?dist}
-Summary: Private OpenSSL 3.5.7 LTS build for applications
+Name:           openssl35
+Version:        3.5.8
+Release:        1%{?dist}
+Summary:        Private OpenSSL 3.5.8 LTS build for applications
 
-License: Apache-2.0
-URL: https://www.openssl.org/
-Source0: openssl-%{version}.tar.gz
+License:        Apache-2.0
+URL:            https://www.openssl.org/
+Source0:        openssl-%{version}.tar.gz
 
-BuildRequires: gcc
-BuildRequires: make
-BuildRequires: perl-core
-BuildRequires: zlib-devel
+BuildRequires:  gcc
+BuildRequires:  make
+BuildRequires:  perl-core
+BuildRequires:  zlib-devel
 
-Provides: openssl35-libs = %{version}-%{release}
-Provides: openssl35-devel = %{version}-%{release}
+Provides:       openssl35-libs = %{version}-%{release}
+Provides:       openssl35-devel = %{version}-%{release}
 
 %description
-Private OpenSSL 3.5.7 LTS build for applications.
+Private OpenSSL 3.5.8 LTS build for applications.
 
-This package installs OpenSSL 3.5.7 under /opt/openssl35.
-It does not replace the system OpenSSL libraries provided by AlmaLinux.
+This package installs OpenSSL 3.5.8 under %{openssl35_prefix}.
+It is designed to coexist with the system OpenSSL libraries provided
+by AlmaLinux and does not replace the system OpenSSL installation.
+
 
 %prep
 %setup -q -n openssl-%{version}
 
+
 %build
 ./Configure linux-x86_64 shared zlib \
-  --prefix=%{openssl35_prefix} \
-  --openssldir=%{openssl35_prefix}/ssl \
-  --libdir=lib64 \
-  -fPIC \
-  -Wl,-rpath,%{openssl35_prefix}/lib64
+    --prefix=%{openssl35_prefix} \
+    --openssldir=%{openssl35_prefix}/ssl \
+    --libdir=lib64 \
+    -fPIC \
+    -Wl,-rpath,%{openssl35_prefix}/lib64
 
 make %{?_smp_mflags}
 
+
 %install
 rm -rf %{buildroot}
+
 make install_sw DESTDIR=%{buildroot}
+
+# Register the private OpenSSL library directory with the dynamic linker.
+mkdir -p %{buildroot}%{_sysconfdir}/ld.so.conf.d
+
+echo "%{openssl35_prefix}/lib64" \
+    > %{buildroot}%{_sysconfdir}/ld.so.conf.d/openssl35.conf
+
+
+%post
+/sbin/ldconfig
+
+
+%postun
+/sbin/ldconfig
+
 
 %files
 %{openssl35_prefix}
+%config(noreplace) %{_sysconfdir}/ld.so.conf.d/openssl35.conf
+
 
 %changelog
-* Wed Jun 10 2026 Akiyoshi Kurita <weibu@redadmin.org> - 3.5.7-1
-- Initial private OpenSSL 3.5.7 LTS build for EL8
+* Mon Aug 31 2026 Akiyoshi Kurita <weibu@redadmin.org> - 3.5.8-1
+- Initial private OpenSSL 3.5.8 LTS build for EL8
