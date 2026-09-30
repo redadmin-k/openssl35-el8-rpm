@@ -1,22 +1,22 @@
-2026-08-31 14:59:23,798 - Mock Version: 6.8
-2026-08-31 14:59:23,801 - Start(bootstrap): chroot init
-2026-08-31 14:59:23,807 - Start(bootstrap): cleaning package manager metadata
-2026-08-31 14:59:23,807 - Finish(bootstrap): cleaning package manager metadata
-2026-08-31 14:59:24,488 - Finish(bootstrap): chroot init
-2026-08-31 14:59:24,489 - Start: chroot init
-2026-08-31 14:59:24,493 - Start: unpacking root cache
-2026-08-31 14:59:27,957 - Finish: unpacking root cache
-2026-08-31 14:59:27,959 - Start: cleaning package manager metadata
-2026-08-31 14:59:27,963 - Finish: cleaning package manager metadata
-2026-08-31 14:59:29,704 - Start: dnf4 update
-2026-08-31 14:59:38,632 - Finish: dnf4 update
-2026-08-31 14:59:39,021 - Finish: chroot init
-2026-08-31 14:59:39,022 - Start: build phase for openssl35-3.5.8-1.el8.src.rpm
-2026-08-31 14:59:39,022 - Start: build setup for openssl35-3.5.8-1.el8.src.rpm
-2026-08-31 15:00:16,568 - Finish: build setup for openssl35-3.5.8-1.el8.src.rpm
-2026-08-31 15:00:16,568 - Start: rpmbuild openssl35-3.5.8-1.el8.src.rpm
-2026-08-31 15:00:16,571 - Start: Outputting list of installed packages
-2026-08-31 15:00:16,858 - Finish: Outputting list of installed packages
-2026-08-31 15:17:17,489 - Finish: rpmbuild openssl35-3.5.8-1.el8.src.rpm
-2026-08-31 15:17:17,609 - Finish: build phase for openssl35-3.5.8-1.el8.src.rpm
-2026-08-31 15:17:17,611 - Finish: run
+2026-09-30 09:10:52,388 - Mock Version: 6.8
+2026-09-30 09:10:52,391 - Start(bootstrap): chroot init
+2026-09-30 09:11:10,660 - Start(bootstrap): cleaning package manager metadata
+2026-09-30 09:11:10,660 - Finish(bootstrap): cleaning package manager metadata
+2026-09-30 09:11:33,515 - Finish(bootstrap): chroot init
+2026-09-30 09:11:33,516 - Start: chroot init
+2026-09-30 09:11:33,521 - Start: unpacking root cache
+2026-09-30 09:11:36,466 - Finish: unpacking root cache
+2026-09-30 09:11:36,468 - Start: cleaning package manager metadata
+2026-09-30 09:11:36,471 - Finish: cleaning package manager metadata
+2026-09-30 09:11:52,784 - Start: dnf4 update
+2026-09-30 09:13:23,728 - Finish: dnf4 update
+2026-09-30 09:19:07,165 - Finish: chroot init
+2026-09-30 09:19:07,166 - Start: build phase for openssl35-3.5.9-1.el8.src.rpm
+2026-09-30 09:19:07,167 - Start: build setup for openssl35-3.5.9-1.el8.src.rpm
+2026-09-30 09:27:18,051 - Finish: build setup for openssl35-3.5.9-1.el8.src.rpm
+2026-09-30 09:27:18,051 - Start: rpmbuild openssl35-3.5.9-1.el8.src.rpm
+2026-09-30 09:27:18,054 - Start: Outputting list of installed packages
+2026-09-30 09:27:18,320 - Finish: Outputting list of installed packages
+2026-09-30 09:44:18,011 - Finish: rpmbuild openssl35-3.5.9-1.el8.src.rpm
+2026-09-30 09:44:18,087 - Finish: build phase for openssl35-3.5.9-1.el8.src.rpm
+2026-09-30 09:44:18,099 - Finish: run
